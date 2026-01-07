@@ -56,7 +56,7 @@ const About = () => {
                                 <li style={{ borderBottom: '1px solid rgba(0,0,0,0.06)', paddingBottom: '24px' }}>
                                     <div className="flex-between" style={{ marginBottom: '8px' }}>
                                         <div style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1.2rem' }}>PT. Teknologi Server Indonesia (X-Code)</div>
-                                        <div className="text-sm font-medium">Sep 2024 – Nov 2024</div>
+                                        <div className="text-sm font-medium">Jun 2025 – Aug 2025</div>
                                     </div>
                                     <div className="text-sm" style={{ marginBottom: '12px', fontStyle: 'italic' }}>Internship - Yogyakarta, Indonesia</div>
                                     <ul style={{ listStyleType: 'disc', paddingLeft: '20px', fontSize: '0.95rem' }} className="space-y-2">
