@@ -14,7 +14,7 @@ const ProjectCard = ({ title, category, description, image, techStack = [], gith
             transition={{ delay, duration: 0.5 }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            style={{ display: 'block', textDecoration: 'none', color: 'inherit', height: '100%', display: 'flex', flexDirection: 'column' }}
+            style={{ textDecoration: 'none', color: 'inherit', height: '100%', display: 'flex', flexDirection: 'column' }}
         >
             <div style={{
                 height: '240px',
