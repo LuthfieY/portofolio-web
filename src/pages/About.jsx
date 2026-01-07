@@ -138,7 +138,7 @@ const About = () => {
                                 <p><strong>AI & Data:</strong> Scikit-learn, Tensorflow, LangGraph, Selenium, Beautiful Soup</p>
                                 <p><strong>Web:</strong> FastAPI, Streamlit, NextJS</p>
                                 <p><strong>IoT & Networking:</strong> Arduino IDE, ESP, MQTT, Mikrotik</p>
-                                <p><strong>Infrastructure:</strong> Docke, Nginx</p>
+                                <p><strong>Infrastructure:</strong> Docker, Nginx</p>
                                 <p><strong>Soft Skills:</strong> Adaptability, Collaboration, Critical Thinking, Time Management</p>
                                 <p><strong>Languages:</strong> Indonesian (Native), English (Professional)</p>
                             </div>
