@@ -1,0 +1,13 @@
+services:
+  portfolio-web:
+    build: .
+    container_name: luthfie-portfolio
+    restart: always
+    networks:
+      - web-network
+    expose:
+      - "80"
+
+networks:
+  web-network:
+    external: true
