@@ -70,6 +70,7 @@ pipeline {
                 branch 'main'
             }
             steps {
+                input message: 'Deploy to Production?', ok: 'Deploy Now!'
                 script {
                     echo "Deploying to Production (${CUSTOM_TAG})..."
                     sh "docker pull ${IMAGE_NAME}:${CUSTOM_TAG}"
