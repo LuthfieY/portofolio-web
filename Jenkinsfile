@@ -17,24 +17,7 @@ pipeline {
             }
         }
 
-        stage('Test & Lint') {
-            steps {
-                script {
-                    echo 'Running Tests (Linting)...'
-                    try {
-                        if (isUnix()) {
-                            sh 'docker run --rm -v ${PWD}:/app -w /app node:20-alpine sh -c "npm install && npm run lint"'
-                        } else {
-                            bat 'docker run --rm -v %cd%:/app -w /app node:20-alpine sh -c "npm install && npm run lint"'
-                        }
-                    } catch (Exception e) {
-                        error("Linting failed! Please fix your code syntax.")
-                    }
-                }
-            }
-        }
-
-        stage('Build & Push Image') {
+        stage('Lint, Build, & Push Image') {
             when {
                 anyOf {
                     branch 'develop'
@@ -52,7 +35,7 @@ pipeline {
                          }
                     }
 
-                    echo 'Building & Pushing Docker Image...'
+                    echo 'Linting & Building & Pushing Docker Image...'
                     if (env.BRANCH_NAME == 'develop') {
                         // Staging: Selalu pakai tag 'staging' (overwrite) agar hemat storage
                         sh "docker build -t ${IMAGE_NAME}:staging ."
