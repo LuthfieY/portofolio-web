@@ -1,6 +1,6 @@
 services:
   portfolio-web:
-    build: .
+    image: vii4442/portofolio-web:${IMAGE_TAG:-latest}
     container_name: luthfie-portfolio
     restart: always
     networks:

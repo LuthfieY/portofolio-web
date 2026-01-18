@@ -1,0 +1,13 @@
+services:
+  portfolio-web:
+    image: vii4442/portofolio-web:${IMAGE_TAG:-staging}
+    container_name: luthfie-portfolio-staging
+    restart: always
+    networks:
+      - web-network
+    ports:
+      - "8081:80"
+
+networks:
+  web-network:
+    external: true
