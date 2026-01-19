@@ -2,11 +2,8 @@ pipeline {
     agent any
 
     environment {
-        // Ganti dengan username DockerHub Anda / nama repository
         IMAGE_NAME = "vii4442/portofolio-web"
-        // ID Credentials yang disimpan di Jenkins
         DOCKER_CRED_ID = "dockerhub-credentials"
-        // Versi Otomatis: v1.0.1, v1.0.2, dll
         CUSTOM_TAG = "v1.0.${env.BUILD_NUMBER}"
     }
 
@@ -23,8 +20,8 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker Image (Runs Linting)...'
-                    // Build image tanpa tag dulu untuk testing
-                    sh "docker build -t ${IMAGE_NAME}:test-${env.BUILD_NUMBER} ."
+                    // Build image tanpa tag dulu untuk testing, matikan cache biar aman
+                    sh "docker build --no-cache -t ${IMAGE_NAME}:test-${env.BUILD_NUMBER} ."
                 }
             }
         }
