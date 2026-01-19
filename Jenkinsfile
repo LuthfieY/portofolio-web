@@ -17,7 +17,22 @@ pipeline {
             }
         }
 
-        stage('Lint, Build, & Push Image') {
+        stage('Lint Code') {
+            steps {
+                script {
+                    echo 'Linting Code (Runs on ALL Branches)...'
+                    // Jalankan container node sementara hanya untuk linting
+                    // Gunakan volume mapping agar tidak perlu build image full
+                    if (isUnix()) {
+                         sh 'docker run --rm -v ${PWD}:/app -w /app node:20-alpine sh -c "npm install && npm run lint"'
+                    } else {
+                         bat 'docker run --rm -v %cd%:/app -w /app node:20-alpine sh -c "npm install && npm run lint"'
+                    }
+                }
+            }
+        }
+
+        stage('Build & Push Image') {
             when {
                 anyOf {
                     branch 'develop'
@@ -35,7 +50,7 @@ pipeline {
                          }
                     }
 
-                    echo 'Linting & Building & Pushing Docker Image...'
+                    echo 'Building & Pushing Docker Image...'
                     if (env.BRANCH_NAME == 'develop') {
                         // Staging: Selalu pakai tag 'staging' (overwrite) agar hemat storage
                         sh "docker build -t ${IMAGE_NAME}:staging ."
