@@ -71,8 +71,8 @@ pipeline {
                 script {
                     echo 'Deploying to Staging (Port 8081)...'
                     sh "docker pull ${IMAGE_NAME}:staging"
-                    // Paksa pakai tag staging
-                    sh "IMAGE_TAG=staging docker-compose -f docker-compose.staging.yml up -d"
+                    // Paksa pakai tag staging dan recreate container
+                    sh "IMAGE_TAG=staging docker-compose -f docker-compose.staging.yml up -d --force-recreate"
                 }
             }
         }
@@ -87,7 +87,7 @@ pipeline {
                     echo "Deploying to Production (${CUSTOM_TAG})..."
                     sh "docker pull ${IMAGE_NAME}:${CUSTOM_TAG}"
                     // Paksa pakai tag versi spesifik (v1.0.X) agar aman
-                    sh "IMAGE_TAG=${CUSTOM_TAG} docker-compose up -d"
+                    sh "IMAGE_TAG=${CUSTOM_TAG} docker-compose up -d --force-recreate"
                 }
             }
         }
