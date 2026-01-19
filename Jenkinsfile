@@ -17,22 +17,20 @@ pipeline {
             }
         }
 
-        stage('Lint Code') {
+        // Stage Build & Test (Jalan di SEMUA Branch)
+        // Linting otomatis jalan karena ada 'RUN npm run lint' di Dockerfile
+        stage('Build & Test') {
             steps {
                 script {
-                    echo 'Linting Code (Runs on ALL Branches)...'
-                    // Jalankan container node sementara hanya untuk linting
-                    // Gunakan volume mapping agar tidak perlu build image full
-                    if (isUnix()) {
-                         sh 'docker run --rm -v ${PWD}:/app -w /app node:20-alpine sh -c "npm install && npm run lint"'
-                    } else {
-                         bat 'docker run --rm -v %cd%:/app -w /app node:20-alpine sh -c "npm install && npm run lint"'
-                    }
+                    echo 'Building Docker Image (Runs Linting)...'
+                    // Build image tanpa tag dulu untuk testing
+                    sh "docker build -t ${IMAGE_NAME}:test-${env.BUILD_NUMBER} ."
                 }
             }
         }
 
-        stage('Build & Push Image') {
+        // Stage Push Image (Hanya develop & main)
+        stage('Push Image') {
             when {
                 anyOf {
                     branch 'develop'
@@ -50,15 +48,14 @@ pipeline {
                          }
                     }
 
-                    echo 'Building & Pushing Docker Image...'
+                    echo 'Pushing Docker Image...'
+                    // Retag image test tadi ke tag yang sesuai
                     if (env.BRANCH_NAME == 'develop') {
-                        // Staging: Selalu pakai tag 'staging' (overwrite) agar hemat storage
-                        sh "docker build -t ${IMAGE_NAME}:staging ."
+                        sh "docker tag ${IMAGE_NAME}:test-${env.BUILD_NUMBER} ${IMAGE_NAME}:staging"
                         sh "docker push ${IMAGE_NAME}:staging"
                     } else {
-                        // Production: Push 2 tag (Versi spesifik & latest)
-                        echo "Building version: ${CUSTOM_TAG}"
-                        sh "docker build -t ${IMAGE_NAME}:${CUSTOM_TAG} -t ${IMAGE_NAME}:latest ."
+                        sh "docker tag ${IMAGE_NAME}:test-${env.BUILD_NUMBER} ${IMAGE_NAME}:${CUSTOM_TAG}"
+                        sh "docker tag ${IMAGE_NAME}:test-${env.BUILD_NUMBER} ${IMAGE_NAME}:latest"
                         sh "docker push ${IMAGE_NAME}:${CUSTOM_TAG}"
                         sh "docker push ${IMAGE_NAME}:latest"
                     }
@@ -100,6 +97,7 @@ pipeline {
                 script {
                     echo 'Cleaning up...'
                     sh 'docker logout'
+                    sh "docker image rm ${IMAGE_NAME}:test-${env.BUILD_NUMBER} || true"
                     sh 'docker image prune -f'
                 }
             }
