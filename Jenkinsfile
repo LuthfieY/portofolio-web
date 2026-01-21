@@ -92,7 +92,8 @@ pipeline {
                         string(credentialsId: 'staging-mongo-details', variable: 'MONGO_DETAILS')
                     ]) {
                         // Deploy staging environment (Single Quote for Shell Interpolation)
-                        sh 'IMAGE_TAG=staging STAGING_SECRET_KEY="$SECRET_KEY" STAGING_MONGO_DETAILS="$MONGO_DETAILS" docker compose -f docker-compose.staging.yml up -d --force-recreate'
+                        // Menggunakan docker-compose (hyphen) karena V2 plugin mungkin tidak tersedia
+                        sh 'IMAGE_TAG=staging STAGING_SECRET_KEY="$SECRET_KEY" STAGING_MONGO_DETAILS="$MONGO_DETAILS" docker-compose -f docker-compose.staging.yml up -d --force-recreate'
                     }
                     
                     echo '✅ Staging deployed: http://vps-ip:8081'
@@ -119,7 +120,7 @@ pipeline {
                         string(credentialsId: 'prod-mongo-details', variable: 'MONGO_DETAILS')
                     ]) {
                         // Deploy baru production (Single Quote & Shell Variables)
-                        sh 'IMAGE_TAG="' + CUSTOM_TAG + '" PROD_SECRET_KEY="$SECRET_KEY" PROD_MONGO_DETAILS="$MONGO_DETAILS" docker compose -f docker-compose.prod.yml up -d --force-recreate'
+                        sh 'IMAGE_TAG="' + CUSTOM_TAG + '" PROD_SECRET_KEY="$SECRET_KEY" PROD_MONGO_DETAILS="$MONGO_DETAILS" docker-compose -f docker-compose.prod.yml up -d --force-recreate'
                     }
                 }
             }
