@@ -26,9 +26,9 @@ async def add_project_item(
     title: str = Form(...),
     category: str = Form(""),
     description: str = Form(...),
-    project_url: str = Form(...),  # Comma-separated URLs
-    github_url: str = Form(...),  # Comma-separated URLs
-    tags: str = Form(...), # Received as comma-separated string
+    project_url: str = Form(""),
+    github_url: str = Form(""),
+    tags: str = Form(""),
     image: UploadFile = File(...),
     current_user: UserSchema = Depends(get_current_user)
 ):
