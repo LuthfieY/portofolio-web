@@ -1,12 +1,47 @@
 services:
-  portfolio-web:
+  portfolio-web-staging:
     image: vii4442/portofolio-web:${IMAGE_TAG:-staging}
     container_name: luthfie-portfolio-staging
     restart: always
     networks:
       - web-network
-    ports:
-      - "8081:80"
+    expose:
+      - "80"
+
+  portfolio-backend-staging:
+    image: vii4442/portofolio-backend:${IMAGE_TAG:-staging}
+    container_name: portofolio-backend-staging
+    restart: always
+    volumes:
+      - staging_uploads:/app/static/uploads
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    environment:
+      - MONGO_DETAILS=${STAGING_MONGO_DETAILS}
+      - SECRET_KEY=${STAGING_SECRET_KEY}
+    networks:
+      - web-network
+    expose:
+      - "8000"
+    depends_on:
+      - portfolio-mongodb-staging
+
+  portfolio-mongodb-staging:
+    image: mongo:latest
+    container_name: portofolio-db-staging
+    restart: always
+    volumes:
+      - staging_mongodb_data:/data/db
+    networks:
+      - web-network
+    expose:
+      - "27017"
+    environment:
+      MONGO_INITDB_DATABASE: portfolio_staging
+
+volumes:
+  staging_uploads:
+  staging_mongodb_data:
+
 
 networks:
   web-network:

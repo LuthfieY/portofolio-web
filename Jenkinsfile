@@ -1,8 +1,9 @@
 pipeline {
     agent any
 
-    environment {
-        IMAGE_NAME = "vii4442/portofolio-web"
+        environment {
+        WEB_IMAGE_NAME = "vii4442/portofolio-web"
+        BACKEND_IMAGE_NAME = "vii4442/portofolio-backend"
         DOCKER_CRED_ID = "dockerhub-credentials"
         CUSTOM_TAG = "v1.0.${env.BUILD_NUMBER}"
     }
@@ -14,19 +15,19 @@ pipeline {
             }
         }
 
-        // Stage Build & Test (Jalan di SEMUA Branch)
-        // Linting otomatis jalan karena ada 'RUN npm run lint' di Dockerfile
         stage('Build & Test') {
             steps {
                 script {
-                    echo 'Building Docker Image (Runs Linting)...'
-                    // Build image tanpa tag dulu untuk testing, matikan cache biar aman
-                    sh "docker build --no-cache -t ${IMAGE_NAME}:test-${env.BUILD_NUMBER} ."
+                    echo 'Building Docker Images...'
+                    // Build Frontend (Runs Linting)
+                    sh "docker build --no-cache -t ${WEB_IMAGE_NAME}:test-${env.BUILD_NUMBER} ."
+                    
+                    // Build Backend
+                    sh "docker build --no-cache -t ${BACKEND_IMAGE_NAME}:test-${env.BUILD_NUMBER} ./backend"
                 }
             }
         }
 
-        // Stage Push Image (Hanya develop & main)
         stage('Push Image') {
             when {
                 anyOf {
@@ -45,16 +46,27 @@ pipeline {
                          }
                     }
 
-                    echo 'Pushing Docker Image...'
-                    // Retag image test tadi ke tag yang sesuai
+                    echo 'Pushing Docker Images...'
                     if (env.BRANCH_NAME == 'develop') {
-                        sh "docker tag ${IMAGE_NAME}:test-${env.BUILD_NUMBER} ${IMAGE_NAME}:staging"
-                        sh "docker push ${IMAGE_NAME}:staging"
+                        // Push Frontend
+                        sh "docker tag ${WEB_IMAGE_NAME}:test-${env.BUILD_NUMBER} ${WEB_IMAGE_NAME}:staging"
+                        sh "docker push ${WEB_IMAGE_NAME}:staging"
+                        
+                        // Push Backend
+                        sh "docker tag ${BACKEND_IMAGE_NAME}:test-${env.BUILD_NUMBER} ${BACKEND_IMAGE_NAME}:staging"
+                        sh "docker push ${BACKEND_IMAGE_NAME}:staging"
                     } else {
-                        sh "docker tag ${IMAGE_NAME}:test-${env.BUILD_NUMBER} ${IMAGE_NAME}:${CUSTOM_TAG}"
-                        sh "docker tag ${IMAGE_NAME}:test-${env.BUILD_NUMBER} ${IMAGE_NAME}:latest"
-                        sh "docker push ${IMAGE_NAME}:${CUSTOM_TAG}"
-                        sh "docker push ${IMAGE_NAME}:latest"
+                        // Push Frontend
+                        sh "docker tag ${WEB_IMAGE_NAME}:test-${env.BUILD_NUMBER} ${WEB_IMAGE_NAME}:${CUSTOM_TAG}"
+                        sh "docker tag ${WEB_IMAGE_NAME}:test-${env.BUILD_NUMBER} ${WEB_IMAGE_NAME}:latest"
+                        sh "docker push ${WEB_IMAGE_NAME}:${CUSTOM_TAG}"
+                        sh "docker push ${WEB_IMAGE_NAME}:latest"
+
+                        // Push Backend
+                        sh "docker tag ${BACKEND_IMAGE_NAME}:test-${env.BUILD_NUMBER} ${BACKEND_IMAGE_NAME}:${CUSTOM_TAG}"
+                        sh "docker tag ${BACKEND_IMAGE_NAME}:test-${env.BUILD_NUMBER} ${BACKEND_IMAGE_NAME}:latest"
+                        sh "docker push ${BACKEND_IMAGE_NAME}:${CUSTOM_TAG}"
+                        sh "docker push ${BACKEND_IMAGE_NAME}:latest"
                     }
                 }
             }
@@ -66,12 +78,23 @@ pipeline {
             }
             steps {
                 script {
-                    echo 'Deploying to Staging (Port 8081)...'
-                    sh "docker pull ${IMAGE_NAME}:staging"
-                    // Paksa hapus container lama jika ada (biar tidak conflict)
-                    sh "docker rm -f luthfie-portfolio-staging || true"
-                    // Deploy baru
-                    sh "IMAGE_TAG=staging docker-compose -f docker-compose.staging.yml up -d --force-recreate"
+                    echo 'Deploying to Staging (Complete Environment)...'
+                    sh "docker pull ${WEB_IMAGE_NAME}:staging"
+                    sh "docker pull ${BACKEND_IMAGE_NAME}:staging"
+                    
+                    // Paksa hapus container lama jika ada (frontend, backend, db)
+                    sh "docker rm -f luthfie-portfolio-staging portofolio-backend-staging || true"
+                    
+                    // Gunakan credential untuk SECRET_KEY dan MONGO_DETAILS
+                    withCredentials([
+                        string(credentialsId: 'staging-secret-key', variable: 'SECRET_KEY'),
+                        string(credentialsId: 'staging-mongo-details', variable: 'MONGO_DETAILS')
+                    ]) {
+                        // Deploy staging environment (inject env vars)
+                        sh "IMAGE_TAG=staging STAGING_SECRET_KEY=${SECRET_KEY} STAGING_MONGO_DETAILS=${MONGO_DETAILS} docker compose -f docker-compose.staging.yml up -d --force-recreate"
+                    }
+                    
+                    echo '✅ Staging deployed: http://vps-ip:8081'
                 }
             }
         }
@@ -84,11 +107,19 @@ pipeline {
                 input message: 'Deploy to Production?', ok: 'Deploy Now!'
                 script {
                     echo "Deploying to Production (${CUSTOM_TAG})..."
-                    sh "docker pull ${IMAGE_NAME}:${CUSTOM_TAG}"
+                    sh "docker pull ${WEB_IMAGE_NAME}:${CUSTOM_TAG}"
+                    sh "docker pull ${BACKEND_IMAGE_NAME}:${CUSTOM_TAG}"
+                    
                     // Paksa hapus container lama jika ada
-                    sh "docker rm -f luthfie-portfolio || true"
-                    // Deploy baru
-                    sh "IMAGE_TAG=${CUSTOM_TAG} docker-compose up -d --force-recreate"
+                    sh "docker rm -f luthfie-portfolio portofolio-backend || true"
+                    
+                    withCredentials([
+                        string(credentialsId: 'prod-secret-key', variable: 'SECRET_KEY'),
+                        string(credentialsId: 'prod-mongo-details', variable: 'MONGO_DETAILS')
+                    ]) {
+                        // Deploy baru menggunakan docker-compose.prod.yml (inject env vars)
+                        sh "IMAGE_TAG=${CUSTOM_TAG} PROD_SECRET_KEY=${SECRET_KEY} PROD_MONGO_DETAILS=${MONGO_DETAILS} docker compose -f docker-compose.prod.yml up -d --force-recreate"
+                    }
                 }
             }
         }
@@ -98,7 +129,8 @@ pipeline {
                 script {
                     echo 'Cleaning up...'
                     sh 'docker logout'
-                    sh "docker image rm ${IMAGE_NAME}:test-${env.BUILD_NUMBER} || true"
+                    sh "docker image rm ${WEB_IMAGE_NAME}:test-${env.BUILD_NUMBER} || true"
+                    sh "docker image rm ${BACKEND_IMAGE_NAME}:test-${env.BUILD_NUMBER} || true"
                     sh 'docker image prune -f'
                 }
             }

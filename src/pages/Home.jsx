@@ -27,6 +27,11 @@ const projects = [
 const Home = () => {
     return (
         <>
+            {/* Fixed Background Layer */}
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'var(--bg-primary)', zIndex: -1 }}>
+                <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '500px', height: '500px', borderRadius: '50%', backgroundColor: 'rgba(200, 200, 200, 0.05)', filter: 'blur(100px)', pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', bottom: '-10%', right: '-10%', width: '500px', height: '500px', borderRadius: '50%', backgroundColor: 'rgba(200, 200, 200, 0.03)', filter: 'blur(100px)', pointerEvents: 'none' }} />
+            </div>
             <Navbar />
             <div className="container" style={{ paddingTop: '140px', paddingBottom: '100px' }}>
 
@@ -41,8 +46,8 @@ const Home = () => {
                             Hi, I'm Luthfie Yannuardy
                         </h2>
 
-                        <h1 className="text-display" style={{ marginBottom: '32px', color: 'var(--text-primary)' }}>
-                            Building secure and intelligent <span style={{ color: 'var(--text-tertiary)' }}>systems for the future.</span>
+                        <h1 className="text-display" style={{ marginBottom: '32px', color: 'var(--text-primary)', fontSize: '3rem', lineHeight: '1.1', fontWeight: 600 }}>
+                            Building secure and intelligent <br /> <span style={{ color: 'var(--text-tertiary)' }}>systems for the future.</span>
                         </h1>
 
                         <p className="text-xl text-secondary" style={{ maxWidth: '600px', lineHeight: 1.6 }}>

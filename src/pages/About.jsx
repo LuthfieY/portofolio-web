@@ -6,6 +6,11 @@ import { Mail, Linkedin, Github, Phone } from 'lucide-react';
 const About = () => {
     return (
         <>
+            {/* Fixed Background Layer */}
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'var(--bg-primary)', zIndex: -1 }}>
+                <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '500px', height: '500px', borderRadius: '50%', backgroundColor: 'rgba(200, 200, 200, 0.05)', filter: 'blur(100px)', pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', bottom: '-10%', right: '-10%', width: '500px', height: '500px', borderRadius: '50%', backgroundColor: 'rgba(200, 200, 200, 0.03)', filter: 'blur(100px)', pointerEvents: 'none' }} />
+            </div>
             <Navbar />
             <div className="container" style={{ paddingTop: '140px', paddingBottom: '100px' }}>
                 <div className="grid-cols-2" style={{ alignItems: 'start', gridTemplateColumns: '1.2fr 1.8fr', gap: '60px' }}>

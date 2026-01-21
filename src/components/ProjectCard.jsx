@@ -79,14 +79,27 @@ const ProjectCard = ({ title, category, description, image, techStack = [], gith
 
                             {/* Action Buttons */}
                             <div style={{ display: 'flex', gap: '16px' }}>
-                                {githubLink && (
-                                    <a href={githubLink} target="_blank" rel="noopener noreferrer"
-                                        style={{ color: '#fff', padding: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }}
-                                        className="hover-scale"
-                                        title="View Code"
-                                    >
-                                        <Github size={20} />
-                                    </a>
+                                {/* Handle single or multiple GitHub links */}
+                                {Array.isArray(githubLink) ? (
+                                    githubLink.map((link, idx) => (
+                                        <a key={idx} href={link} target="_blank" rel="noopener noreferrer"
+                                            style={{ color: '#fff', padding: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }}
+                                            className="hover-scale"
+                                            title={`View Code ${idx + 1}`}
+                                        >
+                                            <Github size={20} />
+                                        </a>
+                                    ))
+                                ) : (
+                                    githubLink && (
+                                        <a href={githubLink} target="_blank" rel="noopener noreferrer"
+                                            style={{ color: '#fff', padding: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }}
+                                            className="hover-scale"
+                                            title="View Code"
+                                        >
+                                            <Github size={20} />
+                                        </a>
+                                    )
                                 )}
 
                                 {/* Handle single or multiple demo links */}
@@ -121,7 +134,9 @@ const ProjectCard = ({ title, category, description, image, techStack = [], gith
                 <div className="flex-between" style={{ marginBottom: '8px' }}>
                     <h3 className="text-xl" style={{ fontWeight: 600 }}>{title}</h3>
                 </div>
-                <p className="text-secondary text-sm" style={{ marginBottom: '12px', fontWeight: 500 }}>{category}</p>
+                {category && (
+                    <p className="text-secondary text-sm" style={{ marginBottom: '12px', fontWeight: 500 }}>{category}</p>
+                )}
                 <p className="text-tertiary text-sm" style={{ lineHeight: 1.6 }}>{description}</p>
             </div>
 

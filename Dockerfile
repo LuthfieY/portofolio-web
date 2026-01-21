@@ -8,13 +8,20 @@ RUN npm install
 
 COPY . .
 
+# Allow passing VITE_API_URL during build
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
 RUN npm run lint
 RUN npm run build
 
 FROM nginx:alpine
 
+# Copy React build files
 COPY --from=build /app/dist /usr/share/nginx/html
 
+# Copy nginx config (SPA routing + caching)
+# Backend routing (/api/, /uploads/) handled by NPM in production
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80

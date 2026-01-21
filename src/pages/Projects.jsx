@@ -1,67 +1,42 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import ProjectCard from '../components/ProjectCard';
 import { motion } from 'framer-motion';
-
-const projects = [
-    {
-        title: "Lumina Research",
-        category: "Autonomous AI Agent",
-        image: "/images/lumina2.png",
-        description: "An AI-powered application for automating research tasks, helping users transform complex topics into structured, citation-based reports.",
-        techStack: ["Python", "LangGraph", "Gemini", "Streamlit", "SQLite"],
-        githubLink: "https://github.com/LuthfieY/ai-research-agent",
-        demoLink: "https://lumina-research.streamlit.app/"
-    },
-    {
-        title: "AI Vulnerability Scanner",
-        category: "Cybersecurity & AI",
-        image: "/images/ai_scanner.png",
-        description: "An AI-powered web application used to scan systems for security vulnerabilities and produce penetration testing reports.",
-        techStack: ["FastAPI", "Nmap", "LLM", "Laravel"],
-        githubLink: "https://github.com/LuthfieY/Auto-Pentest-Report-Generator",
-        demoLink: "https://autopentest.my.id/"
-    },
-    {
-        title: "Smart Home Prototype",
-        category: "IoT & Web App",
-        image: "/images/homytech.png",
-        description: "A Smart Home application that allows users to control and monitor home utilities through a web dashboard, including remote door access, automated clothesline operation, smart lighting control, and real-time activity logging.",
-        techStack: ["NextJS", "FastAPI", "MongoDB", "MQTT", "C++"],
-        githubLink: "https://github.com/LuthfieY/Homytech",
-        demoLink: "https://homytech.my.id/"
-    },
-    {
-        title: "Adult Income Classification",
-        category: "Machine Learning",
-        image: "/images/ml-model.png",
-        description: "Ensemble learning model and CNN-LSTM deep learning model for adult income classification using census data",
-        techStack: ["Python", "TensorFlow", "Keras", "Scikit-Learn"],
-        demoLink: [
-            "https://colab.research.google.com/drive/1u3SnMA6gnfp62G4nWBGEi3Pk8Mtwr8Eu?usp=sharing#scrollTo=GMJ7aSoZoXbQ",
-            "https://colab.research.google.com/drive/1HasJbhMRzxx3QfJlVRhpmVCVsA6sn32J?usp=sharing"
-        ]
-    },
-    {
-        title: "IoT Room Monitor",
-        category: "IoT & Embedded",
-        image: "/images/temp_humidity.png",
-        description: "Real-time room temperature and humidity monitoring system using ESP8266, integrated with Blynk and Firebase.",
-        techStack: ["C++", "ESP8266", "Blynk", "Firebase"],
-    },
-    {
-        title: "Traveloka  Web Scraper",
-        category: "Data Engineering",
-        image: "/images/web_scraper.png",
-        description: "Terminal based Python web scraper using BeautifulSoup and Selenium to extract Traveloka Hotel data into Google Cloud Datastore.",
-        techStack: ["Python", "Selenium", "BeautifulSoup", "GCP"],
-        githubLink: "https://github.com/LuthfieY/traveloka-webscraper",
-    }
-];
+import { api, API_URL } from '../services/api';
 
 const Projects = () => {
+    const [projects, setProjects] = useState([]);
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                const data = await api.getProjects();
+                // Map the API data to match the ProjectCard expected props
+                const formattedProjects = data.map(p => ({
+                    title: p.title,
+                    category: p.category,
+                    description: p.description,
+                    image: p.image_url?.startsWith('/uploads/') ? `${API_URL}${p.image_url}` : p.image_url,
+                    techStack: p.tags || [],
+                    demoLink: p.project_url || [],  // Pass array directly
+                    githubLink: p.github_url || []   // Pass array directly
+                }));
+                setProjects(formattedProjects);
+            } catch (error) {
+                console.error("Failed to fetch projects:", error);
+            }
+        };
+
+        fetchProjects();
+    }, []);
+
     return (
         <>
+            {/* Fixed Background Layer */}
+            <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'var(--bg-primary)', zIndex: -1 }}>
+                <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '500px', height: '500px', borderRadius: '50%', backgroundColor: 'rgba(200, 200, 200, 0.05)', filter: 'blur(100px)', pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', bottom: '-10%', right: '-10%', width: '500px', height: '500px', borderRadius: '50%', backgroundColor: 'rgba(200, 200, 200, 0.03)', filter: 'blur(100px)', pointerEvents: 'none' }} />
+            </div>
             <Navbar />
             <div className="container" style={{ paddingTop: '140px', paddingBottom: '100px' }}>
                 <motion.div
