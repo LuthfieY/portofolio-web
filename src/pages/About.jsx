@@ -47,12 +47,12 @@ const About = () => {
                         <h1 className="text-display" style={{ marginBottom: '16px' }}>Luthfie Yannuardy</h1>
                         <p className="text-lg text-secondary" style={{ marginBottom: '32px', fontWeight: 500 }}>
                             Internet Engineering Undergraduate Student<br />
-                            Cybersecurity, Automation, & AI Enthusiast
+                            Web Development, Cyber Security, IoT, and AI Enthusiast
                         </p>
 
                         <div className="text-lg text-secondary space-y-6" style={{ lineHeight: 1.8 }}>
                             <p style={{ marginBottom: '24px' }}>
-                                Internet Engineering Undergraduate student with strong interest in Cybersecurity, Automation, and Artificial Intelligence. I have hands-on experience engineering SOAR architectures to streamline SOC operations and executing direct incident response on critical infrastructure. Skilled in Python, Docker, and AI integration to build secure and intelligent systems.
+                                Internet Engineering undergraduate student with strong interests in Web Development, Cyber Security, IoT, and AI. I have experience in building scalable backend services using FastAPI, deploying secure web applications with Docker, Nginx, CI/CD pipelines (Jenkins), and Cloudflare.
                             </p>
 
                             {/* EXPERIENCE */}
@@ -107,7 +107,7 @@ const About = () => {
                                         <div className="text-sm font-medium" style={{ whiteSpace: 'nowrap', marginLeft: '16px' }}>Aug 2023 – Present</div>
                                     </div>
                                     <div className="text-sm text-secondary" style={{ marginBottom: '8px' }}>Applied Bachelor of Internet Engineering</div>
-                                    <div className="text-sm text-secondary">GPA: 3.82/4.00</div>
+                                    <div className="text-sm text-secondary">GPA: 3.85/4.00</div>
                                 </div>
 
                                 {/* Timeline Item 2 */}
@@ -137,14 +137,13 @@ const About = () => {
                             {/* SKILLS */}
                             <h3 className="text-2xl" style={{ color: 'var(--text-primary)', marginTop: '40px', marginBottom: '24px' }}>Skills</h3>
                             <div className="grid-cols-1" style={{ gap: '12px', fontSize: '0.95rem' }}>
-                                <p><strong>Programming:</strong> Python, C, SQL</p>
-                                <p><strong>Databases:</strong> MySQL, MongoDB</p>
-                                <p><strong>Cybersecurity:</strong> Nmap, Wireshark, Wazuh, Burp Suite, GoBuster, SQLMap</p>
-                                <p><strong>AI & Data:</strong> Scikit-learn, Tensorflow, LangGraph, Selenium, Beautiful Soup</p>
-                                <p><strong>Web:</strong> FastAPI, Streamlit, NextJS</p>
+                                <p><strong>Web Development:</strong> Python, FastAPI, REST API, WebSockets, JWT Authentication</p>
+                                <p><strong>Languages:</strong> Python, C, SQL</p>
+                                <p><strong>DevOps & Tools:</strong> Git, GitHub, Docker, Nginx, Jenkins, Cloudflare</p>
+                                <p><strong>Databases:</strong> MySQL, MongoDB, Firebase</p>
                                 <p><strong>IoT & Networking:</strong> Arduino IDE, ESP, MQTT, Mikrotik</p>
-                                <p><strong>Infrastructure:</strong> Docker, Nginx</p>
-                                <p><strong>Soft Skills:</strong> Adaptability, Collaboration, Critical Thinking, Time Management</p>
+                                <p><strong>Cybersecurity:</strong> Nmap, Wireshark, Wazuh, Burp Suite, GoBuster, SQLMap</p>
+                                <p><strong>Soft Skills:</strong> Logical Thinking, Adaptability, Collaboration, Critical Thinking</p>
                                 <p><strong>Languages:</strong> Indonesian (Native), English (Professional)</p>
                             </div>
 
