@@ -20,11 +20,16 @@ pipeline {
                 script {
                     echo 'Building Docker Images...'
                     
-                    def n8nWebhookCredId = (env.BRANCH_NAME == 'develop') ? 'staging-n8n-webhook-url' : 'prod-n8n-webhook-url'
+                    def n8nWebhookCredId = (env.BRANCH_NAME == 'develop') ? 'staging-n8n-webhook-url' : (env.BRANCH_NAME == 'main') ? 'prod-n8n-webhook-url' : 'staging-n8n-webhook-url'
                     
-                    withCredentials([string(credentialsId: n8nWebhookCredId, variable: 'N8N_WEBHOOK_URL')]) {
-                        // Build Frontend (Runs Linting)
-                        sh "docker build --no-cache --build-arg VITE_N8N_WEBHOOK_URL=$N8N_WEBHOOK_URL -t ${WEB_IMAGE_NAME}:test-${env.BUILD_NUMBER} ."
+                    try {
+                        withCredentials([string(credentialsId: n8nWebhookCredId, variable: 'N8N_WEBHOOK_URL')]) {
+                            // Build Frontend (Runs Linting)
+                            sh "docker build --no-cache --build-arg VITE_N8N_WEBHOOK_URL=$N8N_WEBHOOK_URL -t ${WEB_IMAGE_NAME}:test-${env.BUILD_NUMBER} ."
+                        }
+                    } catch (Exception e) {
+                        echo "Warning: Could not find credential ${n8nWebhookCredId}. Using placeholder."
+                        sh "docker build --no-cache --build-arg VITE_N8N_WEBHOOK_URL='http://localhost:5678/webhook/placeholder' -t ${WEB_IMAGE_NAME}:test-${env.BUILD_NUMBER} ."
                     }
                     
                     // Build Backend
