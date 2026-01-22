@@ -35,7 +35,15 @@ app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 async def root():
     return {"message": "Welcome to the Portfolio CMS API"}
 
+
+
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
 app.include_router(project.router, prefix="/api/project", tags=["project"])
+
+@app.on_event("startup")
+async def startup_event():
+    from rag_utils import init_qdrant
+    init_qdrant()
+
 
 

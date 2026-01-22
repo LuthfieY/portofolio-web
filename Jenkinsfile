@@ -19,8 +19,13 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker Images...'
-                    // Build Frontend (Runs Linting)
-                    sh "docker build --no-cache -t ${WEB_IMAGE_NAME}:test-${env.BUILD_NUMBER} ."
+                    
+                    def n8nWebhookCredId = (env.BRANCH_NAME == 'develop') ? 'staging-n8n-webhook-url' : 'prod-n8n-webhook-url'
+                    
+                    withCredentials([string(credentialsId: n8nWebhookCredId, variable: 'N8N_WEBHOOK_URL')]) {
+                        // Build Frontend (Runs Linting)
+                        sh "docker build --no-cache --build-arg VITE_N8N_WEBHOOK_URL=$N8N_WEBHOOK_URL -t ${WEB_IMAGE_NAME}:test-${env.BUILD_NUMBER} ."
+                    }
                     
                     // Build Backend
                     sh "docker build --no-cache -t ${BACKEND_IMAGE_NAME}:test-${env.BUILD_NUMBER} ./backend"
@@ -82,18 +87,17 @@ pipeline {
                     sh "docker pull ${WEB_IMAGE_NAME}:staging"
                     sh "docker pull ${BACKEND_IMAGE_NAME}:staging"
                     
-                    // Paksa hapus container lama jika ada (frontend, backend, db)
                     sh "docker rm -f luthfie-portfolio-staging portofolio-backend-staging || true"
                     
-                    // Gunakan credential untuk SECRET_KEY dan MONGO_DETAILS
-                    // Gunakan credential untuk SECRET_KEY dan MONGO_DETAILS
                     withCredentials([
                         string(credentialsId: 'staging-secret-key', variable: 'SECRET_KEY'),
-                        string(credentialsId: 'staging-mongo-details', variable: 'MONGO_DETAILS')
+                        string(credentialsId: 'staging-mongo-details', variable: 'MONGO_DETAILS'),
+                        string(credentialsId: 'staging-n8n-webhook-host', variable: 'N8N_WEBHOOK_HOST'),
+                        string(credentialsId: 'staging-google-api-key', variable: 'GOOGLE_API_KEY')
                     ]) {
                         // Deploy staging environment (Single Quote for Shell Interpolation)
                         // Menggunakan docker-compose (hyphen) karena V2 plugin mungkin tidak tersedia
-                        sh 'IMAGE_TAG=staging STAGING_SECRET_KEY="$SECRET_KEY" STAGING_MONGO_DETAILS="$MONGO_DETAILS" docker-compose -f docker-compose.staging.yml up -d --force-recreate'
+                        sh 'IMAGE_TAG=staging STAGING_SECRET_KEY="$SECRET_KEY" STAGING_MONGO_DETAILS="$MONGO_DETAILS" STAGING_N8N_WEBHOOK_HOST="$N8N_WEBHOOK_HOST" STAGING_GOOGLE_API_KEY="$GOOGLE_API_KEY" docker-compose -f docker-compose.staging.yml up -d --force-recreate'
                     }
                     
                     echo '✅ Staging deployed: http://vps-ip:8081'
@@ -117,10 +121,12 @@ pipeline {
                     
                     withCredentials([
                         string(credentialsId: 'prod-secret-key', variable: 'SECRET_KEY'),
-                        string(credentialsId: 'prod-mongo-details', variable: 'MONGO_DETAILS')
+                        string(credentialsId: 'prod-mongo-details', variable: 'MONGO_DETAILS'),
+                        string(credentialsId: 'prod-n8n-webhook-host', variable: 'N8N_WEBHOOK_HOST'),
+                        string(credentialsId: 'prod-google-api-key', variable: 'GOOGLE_API_KEY')
                     ]) {
                         // Deploy baru production (Single Quote & Shell Variables)
-                        sh 'IMAGE_TAG="' + CUSTOM_TAG + '" PROD_SECRET_KEY="$SECRET_KEY" PROD_MONGO_DETAILS="$MONGO_DETAILS" docker-compose -f docker-compose.prod.yml up -d --force-recreate'
+                        sh 'IMAGE_TAG="' + CUSTOM_TAG + '" PROD_SECRET_KEY="$SECRET_KEY" PROD_MONGO_DETAILS="$MONGO_DETAILS" PROD_N8N_WEBHOOK_HOST="$N8N_WEBHOOK_HOST" PROD_GOOGLE_API_KEY="$GOOGLE_API_KEY" docker-compose -f docker-compose.prod.yml up -d --force-recreate'
                     }
                 }
             }

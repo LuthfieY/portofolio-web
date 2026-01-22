@@ -9,6 +9,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 import NotFound from './pages/NotFound';
 
+import N8NChatbot from './components/N8NChatbot';
+
 function ScrollToTop() {
   const { pathname } = useLocation();
 
@@ -23,6 +25,7 @@ const App = () => {
   return (
     <>
       <ScrollToTop />
+      <N8NChatbot />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />

@@ -20,6 +20,8 @@ services:
     environment:
       - MONGO_DETAILS=${PROD_MONGO_DETAILS}
       - SECRET_KEY=${PROD_SECRET_KEY}
+      - GOOGLE_API_KEY=${PROD_GOOGLE_API_KEY}
+      - QDRANT_URL=http://qdrant:6333
     networks:
       - web-network
     expose:
@@ -36,11 +38,45 @@ services:
     networks:
       - web-network
     expose:
-      - "27017"
+    environment:
+      - MONGO_INITDB_DATABASE: portfolio_db
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n
+    restart: always
+    expose:
+      - "5678"
+    environment:
+      - N8N_HOST=n8n
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=${PROD_N8N_WEBHOOK_HOST}
+      - GENERIC_TIMEZONE=Asia/Jakarta
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - web-network
+    depends_on:
+      - portfolio-mongodb
+      - qdrant
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    restart: always
+    expose:
+      - "6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - web-network
 
 volumes:
   uploads_data:
   portfolio_mongodb_data:
+  n8n_data:
+  qdrant_data:
 
 
 networks:

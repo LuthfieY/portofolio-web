@@ -18,6 +18,8 @@ services:
     environment:
       - MONGO_DETAILS=${STAGING_MONGO_DETAILS}
       - SECRET_KEY=${STAGING_SECRET_KEY}
+      - GOOGLE_API_KEY=${STAGING_GOOGLE_API_KEY}
+      - QDRANT_URL=http://qdrant-staging:6333
     networks:
       - web-network
     expose:
@@ -38,9 +40,42 @@ services:
     environment:
       MONGO_INITDB_DATABASE: portfolio_staging
 
+  n8n-staging:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n-staging
+    restart: always
+    expose:
+      - "5678"
+    environment:
+      - N8N_HOST=n8n-staging
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=${STAGING_N8N_WEBHOOK_HOST}
+      - GENERIC_TIMEZONE=Asia/Jakarta
+    volumes:
+      - staging_n8n_data:/home/node/.n8n
+    networks:
+      - web-network
+    depends_on:
+      - portfolio-mongodb-staging
+      - qdrant-staging
+
+  qdrant-staging:
+    image: qdrant/qdrant:latest
+    container_name: qdrant-staging
+    restart: always
+    expose:
+      - "6333"
+    volumes:
+      - staging_qdrant_data:/qdrant/storage
+    networks:
+      - web-network
+
 volumes:
   staging_uploads:
   staging_mongodb_data:
+  staging_n8n_data:
+  staging_qdrant_data:
 
 
 networks:

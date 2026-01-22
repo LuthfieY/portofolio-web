@@ -8,3 +8,5 @@ bcrypt==3.2.2
 python-multipart
 python-dotenv
 email-validator
+qdrant-client
+google-generativeai
