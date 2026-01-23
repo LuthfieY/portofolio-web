@@ -38,6 +38,7 @@ services:
     networks:
       - web-network
     expose:
+      - "27017"
     environment:
       - MONGO_INITDB_DATABASE=portfolio_db
 
