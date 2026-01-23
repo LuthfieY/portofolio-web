@@ -14,6 +14,10 @@ origins = [
     "http://localhost:80",
     "http://127.0.0.1",
     "http://127.0.0.1:80",
+    "https://portofolio.luthfie.my.id",
+    "http://portofolio.luthfie.my.id",
+    "http://staging.portofolio.luthfie.my.id",
+    "https://staging.portofolio.luthfie.my.id",
 ]
 
 app.add_middleware(
