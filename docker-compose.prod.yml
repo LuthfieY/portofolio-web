@@ -39,7 +39,7 @@ services:
       - web-network
     expose:
     environment:
-      - MONGO_INITDB_DATABASE: portfolio_db
+      - MONGO_INITDB_DATABASE=portfolio_db
 
   n8n:
     image: docker.n8n.io/n8nio/n8n
