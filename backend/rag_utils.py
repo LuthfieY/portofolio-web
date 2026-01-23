@@ -45,7 +45,7 @@ async def sync_project_to_qdrant(project_data: dict):
         
         # Generate Embedding
         result = genai.embed_content(
-            model="models/embedding-004",
+            model="models/text-embedding-004",
             content=text_content,
             task_type="retrieval_document",
             title=project_data.get('title')
@@ -54,13 +54,16 @@ async def sync_project_to_qdrant(project_data: dict):
         
         # Prepare Payload
         payload = {
-            "title": project_data.get('title'),
-            "category": project_data.get('category'),
-            "description": project_data.get('description'),
-            "tags": project_data.get('tags', []),
-            "image_url": project_data.get('image_url'),
-            "project_url": project_data.get('project_url', []),
-            "github_url": project_data.get('github_url', [])
+            "page_content": text_content,
+            "text": text_content,
+            "metadata": {
+                "title": project_data.get("title", "Untitled"),
+                "technologies": ", ".join(project_data.get("tags", [])),
+                "project_link": project_data.get("project_url", ""),
+                "github_link": project_data.get("github_url", ""),
+                "category": project_data.get("category", ""),
+                "featured": project_data.get("featured", False)
+            }
         }
         
         # Generate a UUID from the ObjectId string
