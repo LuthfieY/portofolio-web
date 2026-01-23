@@ -51,7 +51,7 @@ const Home = () => {
                         </h1>
 
                         <p className="text-xl text-secondary" style={{ maxWidth: '600px', lineHeight: 1.6 }}>
-                            Internet Engineering student passionate about Cybersecurity, Automation, and Artificial Intelligence.
+                            Internet Engineering student passionate about Web Development, Cybersecurity, and Artificial Intelligence.
                         </p>
 
                         <div style={{ marginTop: '32px' }}>

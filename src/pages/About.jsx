@@ -52,7 +52,7 @@ const About = () => {
 
                         <div className="text-lg text-secondary space-y-6" style={{ lineHeight: 1.8 }}>
                             <p style={{ marginBottom: '24px' }}>
-                                Internet Engineering undergraduate student with strong interests in Web Development, Cyber Security, IoT, and AI. I have experience in building scalable backend services using FastAPI, deploying secure web applications with Docker, Nginx, CI/CD pipelines (Jenkins), and Cloudflare.
+                                Internet Engineering undergraduate student with a strong interest on Backend Development and AI-driven systems, with hands-on experience in FastAPI-based backend services, LLM and RAG implementations, and secure web application deployment using Docker, Nginx, CI/CD (Jenkins), and Cloudflare.
                             </p>
 
                             {/* EXPERIENCE */}
@@ -137,10 +137,11 @@ const About = () => {
                             {/* SKILLS */}
                             <h3 className="text-2xl" style={{ color: 'var(--text-primary)', marginTop: '40px', marginBottom: '24px' }}>Skills</h3>
                             <div className="grid-cols-1" style={{ gap: '12px', fontSize: '0.95rem' }}>
-                                <p><strong>Web Development:</strong> Python, FastAPI, REST API, WebSockets, JWT Authentication</p>
-                                <p><strong>Languages:</strong> Python, C, SQL</p>
+                                <p><strong>Web Development:</strong> Python, FastAPI, WebSockets, JWT Authentication</p>
+                                <p><strong>AI:</strong> LLMs, Retrieval-Augmented Generation (RAG), LangGraph, n8n</p>
+                                <p><strong>Programming Languages:</strong> Python, C, SQL</p>
                                 <p><strong>DevOps & Tools:</strong> Git, GitHub, Docker, Nginx, Jenkins, Cloudflare</p>
-                                <p><strong>Databases:</strong> MySQL, MongoDB, Firebase</p>
+                                <p><strong>Databases:</strong> MySQL, MongoDB, Firebase, Qdrant</p>
                                 <p><strong>IoT & Networking:</strong> Arduino IDE, ESP, MQTT, Mikrotik</p>
                                 <p><strong>Cybersecurity:</strong> Nmap, Wireshark, Wazuh, Burp Suite, GoBuster, SQLMap</p>
                                 <p><strong>Soft Skills:</strong> Logical Thinking, Adaptability, Collaboration, Critical Thinking</p>
