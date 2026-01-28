@@ -1,23 +1,23 @@
 import React, { useEffect } from 'react';
 
 const N8NChatbot = () => {
-    const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL;
+  const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL;
 
-    useEffect(() => {
-        if (!webhookUrl) {
-            console.warn('N8N_WEBHOOK_URL is not defined');
-            return;
-        }
+  useEffect(() => {
+    if (!webhookUrl) {
+      console.warn('N8N_WEBHOOK_URL is not defined');
+      return;
+    }
 
-        const scriptUrl = 'https://cdn.n8nchatui.com/v1/embed.js';
+    const scriptUrl = 'https://cdn.n8nchatui.com/v1/embed.js';
 
-        // Inject Script
-        const script = document.createElement('script');
-        script.type = 'module';
-        // We defer execution slightly to ensure DOM is ready if needed, mostly standard for module scripts
-        script.defer = true;
+    // Inject Script
+    const script = document.createElement('script');
+    script.type = 'module';
+    // We defer execution slightly to ensure DOM is ready if needed, mostly standard for module scripts
+    script.defer = true;
 
-        script.innerHTML = `
+    script.innerHTML = `
           import Chatbot from "${scriptUrl}";
           Chatbot.init({
             "n8nChatUrl": "${webhookUrl}",
@@ -88,8 +88,8 @@ const N8NChatbot = () => {
                   "backgroundColor": "#ffffff",
                   "textColor": "#1e1e1f",
                   "sendButtonColor": "#666666",
-                  "maxChars": 50,
-                  "maxCharsWarningMessage": "You exceeded the characters limit. Please input less than 50 characters.",
+                  "maxChars": 200,
+                  "maxCharsWarningMessage": "You exceeded the characters limit. Please input less than 200 characters.",
                   "autoFocus": false,
                   "borderRadius": 6,
                   "sendButtonBorderRadius": 50
@@ -98,14 +98,14 @@ const N8NChatbot = () => {
             }
           });
         `;
-        document.body.appendChild(script);
+    document.body.appendChild(script);
 
-        return () => {
-            if (document.body.contains(script)) document.body.removeChild(script);
-        };
-    }, [webhookUrl]);
+    return () => {
+      if (document.body.contains(script)) document.body.removeChild(script);
+    };
+  }, [webhookUrl]);
 
-    return null;
+  return null;
 };
 
 export default N8NChatbot;
