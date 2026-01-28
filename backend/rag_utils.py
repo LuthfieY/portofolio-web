@@ -54,7 +54,8 @@ async def sync_project_to_qdrant(project_data: dict):
         
         # Prepare Payload
         payload = {
-            "page_content": text_content,
+            "pageContent": text_content,  # camelCase for n8n/LangChain
+            "page_content": text_content,  # snake_case for backwards compatibility
             "text": text_content,
             "metadata": {
                 "title": project_data.get("title", "Untitled"),
