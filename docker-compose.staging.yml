@@ -35,6 +35,8 @@ services:
       - staging_mongodb_data:/data/db
     networks:
       - web-network
+    ports:
+      - "127.0.0.1:27017:27017"
     expose:
       - "27017"
     environment:
@@ -64,6 +66,8 @@ services:
     image: qdrant/qdrant:latest
     container_name: qdrant-staging
     restart: always
+    ports:
+      - "127.0.0.1:6333:6333"
     expose:
       - "6333"
     volumes:
